@@ -1,12 +1,12 @@
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  auth: {
-    user: "woodpeelsocial@gmail.com",
-    pass: "nnlsgpriveniyomx"
-  }
+  // host: "smtp.gmail.com",
+  // port: 587,
+  // auth: {
+  //   user: "woodpeelsocial@gmail.com",
+  //   pass: "nnlsgpriveniyomx"
+  // }
 });
 
 const sendEmail = async options => {
