@@ -148,7 +148,7 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
 
     // 3) Send it to user's email
     
-    const resetURL = `${req.get('Origin')}/CSMS_Intercharge/auth/reset_Password/${resetToken}`;
+    const resetURL = `${req.get('Origin')}/auth/reset_Password/${resetToken}`;
     const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to:`;
 
     try {

@@ -18,15 +18,15 @@ import jwt from 'jsonwebtoken';
 import path from 'path';
 import http from 'http';
 import { Server } from "socket.io";
-import { EditlastMsg, allGroupMessageDelete, contactList, contactListByUser, contactListByUserId, currentUser, groupById, groupContactsList, groupData, groupDelete, groupDeleteMember, groupFileDelete, groupMemberDelete, groupMessageUpdate, groupMsgDelete, groupNameUpdate, groupSearchData, groupSenderMessage, groupsMessage, lastMsg, messageSearchData, messageUpdate, notificationMutedUpdate, notificationUpdate, profileUpdate, receiverData, receiverMessage, receiverNameUpdate, searchGroupData, singleGroupMessageDelete, updateAllUnreadGroupMessage, updateUnreadGroupMessage, updateUnreadMsg, userJoin, userLeave, userMessage, userNameUpdate } from './utils/users.js';
+import { EditlastMsg, UserEmailMatch, allGroupMessageDelete, contactEmail, contactList, contactListByUser, contactListByUserId, currentUser, groupById, groupContactsList, groupData, groupDelete, groupDeleteMember, groupFileDelete, groupMemberDelete, groupMessageUpdate, groupMsgDelete, groupNameUpdate, groupSearchData, groupSenderMessage, groupsMessage, lastMsg, messageSearchData, messageUpdate, notificationMutedUpdate, notificationUpdate, profileUpdate, receiverData, receiverMessage, receiverNameUpdate, searchGroupData, singleGroupMessageDelete, updateAllUnreadGroupMessage, updateUnreadGroupMessage, updateUnreadMsg, userJoin, userLeave, userMessage, userNameUpdate } from './utils/users.js';
 const users = {};
 const app =express();
 app.use(express.json());
 app.use(cors());
 
 const server = http.createServer(app);
-const io = new Server(server,{cors :{origin:"*",methods:["GET","POST","DELETE","UPDATE","PATCH","PUT"]}});
-
+const io = new Server(server,{cors :{origin: "http://localhost:3000"}});
+// io.listen(8000);
 app.get('/api/token', (req, res) => {
   
   const token = jwt.sign({ username: 'exampleUser' }, 'yourSecretKey');
@@ -60,7 +60,7 @@ const verifyToken = (req, res, next) => {
 app.use("/api/", verifyToken,userRouter)
 
 const PORT=8000;
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
     try{
       console.log("listening on port=>",PORT);
       connection();
@@ -83,7 +83,7 @@ function findUser(username) {
 
 
 io.on("connection", (socket) => {
-  console.log("new user Connected...");
+  console.log("new user Connected...",socket.id);
 
   //**************** */ video call functionality ************************
   socket.on('isbusy', (rid) => {
@@ -227,10 +227,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("contactList", function ({ name, email, userEmail, created_by, username }) {
+    // console.log("Contact list called", name, email, userEmail, created_by, username);
     UserEmailMatch(email, created_by).then((emailData) => {
+      console.log("EmailData: ", emailData)
       if (emailData != null) {
         if (emailData.email != userEmail) {
           contactEmail(email, created_by).then((contactData) => {
+            console.log("ContactData 1: ", contactData)
             if (contactData == null) {
               var user_id = emailData._id;
               let contact_list = [{ 'name': name, 'email': email, 'user_id': user_id, 'created_by': created_by }, { 'name': username, 'email': userEmail, 'user_id': created_by, 'created_by': user_id }];
@@ -242,6 +245,7 @@ io.on("connection", (socket) => {
                     contacts.forEach(contact => {
                       for (const key in users) {
                         if (contact.created_by == users[key]) {
+                          console.log("Contacts",users[key],contacts);
                           io.to(key).emit('contactsLists', { contacts: contacts });
                         }
                       }
@@ -260,6 +264,7 @@ io.on("connection", (socket) => {
                       contacts.forEach(contact => {
                         for (const key in users) {
                           if (contact.created_by == users[key]) {
+                            console.log("Contacts",users[key],contacts);
                             io.to(key).emit('contactsLists', { contacts: contacts });
                           }
                         }
@@ -309,6 +314,7 @@ io.on("connection", (socket) => {
   // Con tact List search
   socket.on('searchContactValue', ({ searchVal, userId }) => {
     searchContactData(searchVal, userId).then((contacts) => {
+      console.log("Contacts",users[key],contacts);
       io.to(socket.id).emit('contactsLists', {
         contacts: contacts
       });
@@ -354,17 +360,24 @@ io.on("connection", (socket) => {
 
   // Message Create
   socket.on("chat message", function ({ message, sender_id, receiver_id, file_upload, flag }) {
+    
     const single_message = new Msg({ message, sender_id, receiver_id, file_upload, flag });
+    
     single_message.save().then(() => {
-      createdAt = single_message.createdAt;
-      id = single_message._id;
+      // console.log(single_message);
+      let createdAt = single_message.createdAt;
+      let id = single_message._id;
       receiverData(sender_id).then((receiverData) => {
+        // console.log("Receiver Data: " + receiverData);
         const receiverName = receiverData.name;
         const receiverImage = receiverData.image;
         let myid;
+        console.log("USERS",users)
         for (const key in users) {
+          console.log("r id",receiver_id);
           if (receiver_id == users[key]) {
             myid = sender_id;
+            console.log("to key", key,users[key]);
             io.to(key).emit("chat message", ({ id, message, sender_id, receiver_id, file_upload, createdAt, receiverName, receiverImage, myid, flag }));
           }
           if (sender_id == users[key]) {
@@ -963,6 +976,7 @@ io.on("connection", (socket) => {
 
   // User Disconnect
   socket.on("disconnect", () => {
+    let user=''
     socket.broadcast.emit('user-disconnected', user = users[socket.id]);
     io.emit("user-list", users[socket.id]);
     userLeave({ id: users[socket.id] })
