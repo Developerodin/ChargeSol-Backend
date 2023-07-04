@@ -8,4 +8,4 @@ userRouter.post('/signin', signin);
 userRouter.get('/logout', logout);
 userRouter.post('/forgotPassword', forgotPassword);
 userRouter.patch('/resetPassword/:token', resetPassword);
-userRouter.get('/', index);
+
