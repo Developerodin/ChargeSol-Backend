@@ -32,7 +32,7 @@ app.get('/',(req,res)=>{
     message:"Backen is Working"
   })
 })
-app.get('/token', (req, res) => {
+app.get('/api/token', (req, res) => {
   
   const token = jwt.sign({ username: 'exampleUser' }, 'yourSecretKey');
   
@@ -62,9 +62,9 @@ const verifyToken = (req, res, next) => {
 
 
 
-app.use("/",userRouter)
+app.use("/api/",verifyToken,userRouter)
 
-const PORT=8080;
+const PORT=8000;
 server.listen(PORT,()=>{
     try{
       console.log("listening on port=>",PORT);
