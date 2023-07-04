@@ -27,7 +27,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server,{cors :{origin: "http://localhost:3000"}});
 // io.listen(8000);
-app.get('/',(req,res)=>{
+app.get('/api/',(req,res)=>{
   res.send({
     message:"Backen is Working"
   })
