@@ -27,12 +27,12 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server,{cors :{origin: "http://localhost:3000"}});
 // io.listen(8000);
-app.get('/api/',(req,res)=>{
+app.get('/',(req,res)=>{
   res.send({
     message:"Backen is Working"
   })
 })
-app.get('/api/token', (req, res) => {
+app.get('/token', (req, res) => {
   
   const token = jwt.sign({ username: 'exampleUser' }, 'yourSecretKey');
   
@@ -62,7 +62,7 @@ const verifyToken = (req, res, next) => {
 
 
 
-app.use("/api/", verifyToken,userRouter)
+app.use("/", verifyToken,userRouter)
 
 const PORT=8080;
 server.listen(PORT,()=>{
