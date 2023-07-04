@@ -59,7 +59,7 @@ const verifyToken = (req, res, next) => {
 
 app.use("/api/", verifyToken,userRouter)
 
-const PORT=8000;
+const PORT=8080;
 server.listen(PORT,()=>{
     try{
       console.log("listening on port=>",PORT);
