@@ -433,7 +433,9 @@ io.on("connection", (socket) => {
 
   // Contact id wise User get
   socket.on("contactByUser", function ({ id, userId }) {
+    console.log(id, userId);
     contactListByUserId(id, userId).then((contacts) => {
+      console.log("Contact====>", contacts);
       io.to(socket.id).emit('contactInfo', {
         contacts: contacts
       });
