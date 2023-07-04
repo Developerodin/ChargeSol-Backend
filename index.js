@@ -62,7 +62,7 @@ const verifyToken = (req, res, next) => {
 
 
 
-app.use("/.netlify/functions/api",userRouter)
+app.use("/",userRouter)
 
 const PORT=8080;
 server.listen(PORT,()=>{
