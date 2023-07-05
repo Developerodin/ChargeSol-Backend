@@ -319,7 +319,7 @@ io.on("connection", (socket) => {
   // Con tact List search
   socket.on('searchContactValue', ({ searchVal, userId }) => {
     searchContactData(searchVal, userId).then((contacts) => {
-      console.log("Contacts",users[key],contacts);
+      // console.log("Contacts",users[key],contacts);
       io.to(socket.id).emit('contactsLists', {
         contacts: contacts
       });
@@ -438,7 +438,7 @@ io.on("connection", (socket) => {
 
   // Contact id wise User get
   socket.on("contactByUser", function ({ id, userId }) {
-    console.log(id, userId);
+    // console.log("contactByUser",id, userId);
     contactListByUserId(id, userId).then((contacts) => {
       console.log("Contact====>", contacts);
       io.to(socket.id).emit('contactInfo', {
