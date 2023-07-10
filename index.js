@@ -18,7 +18,7 @@ import jwt from 'jsonwebtoken';
 import path from 'path';
 import http from 'http';
 import { Server } from "socket.io";
-import { EditlastMsg, UserEmailMatch, allGroupMessageDelete, contactEmail, contactList, contactListByUser, contactListByUserId, currentUser, groupById, groupContactsList, groupData, groupDelete, groupDeleteMember, groupFileDelete, groupMemberDelete, groupMessageUpdate, groupMsgDelete, groupNameUpdate, groupSearchData, groupSenderMessage, groupsMessage, lastMsg, messageSearchData, messageUpdate, notificationMutedUpdate, notificationUpdate, profileUpdate, receiverData, receiverMessage, receiverNameUpdate, searchGroupData, singleGroupMessageDelete, updateAllUnreadGroupMessage, updateUnreadGroupMessage, updateUnreadMsg, userJoin, userLeave, userMessage, userNameUpdate } from './utils/users.js';
+import { EditlastMsg, UserEmailMatch, allGroupMessageDelete, contactEmail, contactList, contactListByUser, contactListByUserId, currentUser, groupById, groupContactsList, groupData, groupDelete, groupDeleteMember, groupFileDelete, groupMemberDelete, groupMessageUpdate, groupMsgDelete, groupNameUpdate, groupSearchData, groupSenderMessage, groupsMessage, lastMsg, messageDelete, messageSearchData, messageUpdate, notificationMutedUpdate, notificationUpdate, profileUpdate, receiverData, receiverMessage, receiverNameUpdate, searchGroupData, singleGroupMessageDelete, updateAllUnreadGroupMessage, updateUnreadGroupMessage, updateUnreadMsg, userJoin, userLeave, userMessage, userNameUpdate } from './utils/users.js';
 const users = {};
 const app =express();
 app.use(express.json());
@@ -92,6 +92,7 @@ io.on("connection", (socket) => {
 
   //**************** */ video call functionality ************************
   socket.on('isbusy', (rid) => {
+    console.log('isbusy',uid)
     for (const key in users) {
       if (rid == users[key]) {
         io.to(key).emit("itbusy");
@@ -100,6 +101,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on('cutphone', (uid) => {
+    console.log('cut phone',uid)
     for (const key in users) {
       if (uid == users[key]) {
         io.to(key).emit("cutphoness");
@@ -108,6 +110,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on('cutanswerd', (rsid) => {
+    console.log("cutanswerd", rsid)
     for (const key in users) {
       if (rsid == users[key]) {
         io.to(key).emit("cutpeeranswer");
@@ -116,6 +119,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on('answerd', (rspid, ctype) => {
+    console.log("answerd", rspid, ctype)
     for (const key in users) {
       if (rspid == users[key]) {
         io.to(key).emit("answered", rspid, ctype);
@@ -551,9 +555,11 @@ io.on("connection", (socket) => {
 
   // Single Message Delete
   socket.on('message_delete', ({ message_id, receiverId, userId, flag }) => {
-    messageDelete(message_id, flag).then((message) => { });
+    console.log("receiverId===>",receiverId,users)
+    messageDelete(message_id, flag).then((message) => { console.log("message===>",message) });
     for (const key in users) {
       if (receiverId == users[key]) {
+        console.log("delete Emiting");
         io.to(key).emit("message_delete", ({ message_id, receiverId, userId }))
       }
     }
