@@ -25,11 +25,11 @@ app.use(express.json());
 app.use(cors());
 
 const server = http.createServer(app);
-const io = new Server(server,{cors :{origin: "http://localhost:3000"}});
+const io = new Server(server,{cors :{origin: "*"}});
 // io.listen(8000);
 app.get('/',(req,res)=>{
   res.send({
-    message:"Backen is Working finw with AWS and git"
+    message:"Backend is Working  with AWS and git"
   })
 })
 app.get('/api/token', (req, res) => {
