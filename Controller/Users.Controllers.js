@@ -211,6 +211,67 @@ export const logout = async (req, res) => {
     res.status(200).json({ status: 'success' });
 }
 
+export const getAllUsers = async (req, res) => {
+    try {
+      const users = await User.find();
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to retrieve users' });
+    }
+  };
+
+export const editUser = async (req, res) => {
+    const userId = req.params.id;
+    const updatedData = req.body;
+  
+    try {
+      const user = await User.findOne({_id:userId});
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      user.name = updatedData.name;
+      user.email = updatedData.email;
+      user.password = updatedData.password;
+      user.role = updatedData.role;
+      user.status=updatedData.status;
+    
+    await user.save();
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update user' });
+    }
+  };
+
+  export const getUserById = async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const user = await User.findById(id);
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+    }
+  };
+
+  export const deleteUser =async (req, res) => {
+    try {
+      const user = await User.findByIdAndDelete(req.params.id);
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      return res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  };
 /**
  * Login Page
  */

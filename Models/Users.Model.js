@@ -28,10 +28,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 1
     },
-    location: {
-        type: String,
-        required: [true, 'Please provide a location'],
-    },
+    role: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserPermission',
+        required: true,
+      },
     image: {
         type: String,
         default: 'default_image.jpg'
@@ -39,6 +40,10 @@ const userSchema = new mongoose.Schema({
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
+    status: {
+        type: Boolean,
+        default: true,
+      },
     active: {
         type: Boolean,
         default: false,

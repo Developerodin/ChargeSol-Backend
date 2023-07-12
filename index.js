@@ -25,7 +25,12 @@ app.use(express.json());
 app.use(cors());
 
 const server = http.createServer(app);
-const io = new Server(server,{cors :{origin: "http://localhost:3000"}});
+const io = new Server(server, {cors: {
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}});
 // io.listen(8000);
 app.get('/',(req,res)=>{
   res.send({
