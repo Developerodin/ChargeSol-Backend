@@ -19,6 +19,10 @@ import mongoose from 'mongoose';
           type: Boolean,
           default: false,
         },
+        Chargers: {
+          type: Boolean,
+          default: false,
+        },
         ChargingStations: {
           type: Boolean,
           default: false,

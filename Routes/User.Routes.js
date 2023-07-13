@@ -36,6 +36,7 @@ userRouter.post('/roles', async (req, res) => {
   // Get a specific role by ID
   userRouter.get('/roles/:id', async (req, res) => {
     const { id } = req.params;
+    console.log("ID role", id);
     try {
       const role = await getRoleById(id);
       res.json(role);
