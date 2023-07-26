@@ -8,7 +8,7 @@ const ChargerRouter = express.Router();
 
 ChargerRouter.get('/', getAllChargers);
 ChargerRouter.get('/:chargerId', getChargerById);
-ChargerRouter.get('/chargers/cpo/:cpoId', getChargersByCPOId);
+ChargerRouter.get('/cpo/:cpoId', getChargersByCPOId);
 ChargerRouter.post('/addchargers', addCharger);
 
 // Route for deleting a charger by ID

@@ -11,20 +11,20 @@ const CompanyDetailsSchema = new mongoose.Schema({
 
 // Create the Chargers Schema
 const ChargersSchema = new mongoose.Schema({
-  chargerName: { type: String, required: true },
-  chargerStation: String,
-  latitude: { type: Number, required: true },
-  longitude: { type: Number, required: true },
+  ChargerName: { type: String, required: true },
+  ChargerStation: String,
+  Latitude: { type: Number, required: true },
+  Longitude: { type: Number, required: true },
   street: String,
   area: String,
   state: String,
   city: String,
-  pincode: String,
-  accessType: String,
+  Pincode: String,
+  accesstype: String,
   openTime: String,
   closeTime: String,
-  oem: String,
-  ocppId: String,
+  OEM: String,
+  OCPP_ID: String,
   fixedCost: Number,
   demandFee: Number,
   ownership: String,
@@ -33,7 +33,7 @@ const ChargersSchema = new mongoose.Schema({
   companyDetails: [CompanyDetailsSchema], // Array of objects for CompanyDetails
   cpoId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'CpoUser',
+    ref: 'CpoUsers',
     required: true,
   },
 });

@@ -21,6 +21,7 @@ import { Server } from "socket.io";
 import { EditlastMsg, UserEmailMatch, allGroupMessageDelete, contactEmail, contactList, contactListByUser, contactListByUserId, currentUser, groupById, groupContactsList, groupData, groupDelete, groupDeleteMember, groupFileDelete, groupMemberDelete, groupMessageUpdate, groupMsgDelete, groupNameUpdate, groupSearchData, groupSenderMessage, groupsMessage, lastMsg, messageDelete, messageSearchData, messageUpdate, notificationMutedUpdate, notificationUpdate, profileUpdate, receiverData, receiverMessage, receiverNameUpdate, searchGroupData, singleGroupMessageDelete, updateAllUnreadGroupMessage, updateUnreadGroupMessage, updateUnreadMsg, userJoin, userLeave, userMessage, userNameUpdate } from './utils/users.js';
 import { cpoUserRouter } from './Routes/CpoUser.Routes.js';
 import ChargerRouter from './Routes/Chargers.Routes.js';
+import StaionRouter from './Routes/Stations.Routes.js';
 const users = {};
 const app =express();
 app.use(express.json());
@@ -72,6 +73,7 @@ const verifyToken = (req, res, next) => {
 app.use("/api/",verifyToken,userRouter)
 app.use("/api/cpo/",verifyToken,cpoUserRouter)
 app.use("/api/chargers/",verifyToken,ChargerRouter)
+app.use("/api/stations/",verifyToken,StaionRouter)
 
 const PORT=8000;
 server.listen(PORT,()=>{

@@ -39,7 +39,9 @@ export const getChargerById = catchAsync(async (req, res, next) => {
     const { cpoId } = req.params;
   
     // Perform a query to find all chargers with the given CPO ID
-    const chargers = await ChargersModel.find({ cpoId });
+    const chargers = await ChargersModel.find({ cpoId })
+      .populate('cpoId') // Use populate to fetch the related CpoUser details
+      .exec();
   
     if (!chargers || chargers.length === 0) {
       return res.status(404).json({
@@ -55,6 +57,7 @@ export const getChargerById = catchAsync(async (req, res, next) => {
       },
     });
   });
+  
   
 // Controller for adding a new charger
 export const addCharger = catchAsync(async (req, res, next) => {
@@ -78,7 +81,7 @@ export const deleteCharger = catchAsync(async (req, res, next) => {
       message: 'Charger not found',
     });
   }
-  res.status(204).json({
+  res.status(200).json({
     status: 'success',
     data: null,
   });
