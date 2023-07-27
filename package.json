@@ -32,5 +32,6 @@
   "type": "module",
   "engines": {
     "node": ">=14 <15"
-  }
+  },
+  "NODE_VERSION":"16.14.2"
 }
