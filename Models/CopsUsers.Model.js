@@ -26,9 +26,9 @@ const cpoUserSchema = new mongoose.Schema(
     MID: { type: String, required: true },
     Registered_Address: { type: String, required: true },
     state: { type: String, required: true },
-    regional: { type: Boolean,
+    regional: { type: String,
         default: false },
-    National: { type: Boolean,
+    National: { type: String,
         default: false},
     Initial_Balance: { type: Number, default: 0 }, // Assuming the initial balance is a number
     Number: { type: String, required: true },
