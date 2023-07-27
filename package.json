@@ -30,8 +30,5 @@
     "validator": "^13.9.0"
   },
   "type": "module",
-  "engines": {
-    "node": ">=14 <15"
-  },
   "NODE_VERSION":"16.14.2"
 }
