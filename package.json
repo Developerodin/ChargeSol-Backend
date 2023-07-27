@@ -29,5 +29,8 @@
     "socket.io": "^4.7.1",
     "validator": "^13.9.0"
   },
-  "type": "module"
+  "type": "module",
+  "engines": {
+    "node": ">=14 <15"
+  }
 }
