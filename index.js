@@ -22,6 +22,8 @@ import { EditlastMsg, UserEmailMatch, allGroupMessageDelete, contactEmail, conta
 import { cpoUserRouter } from './Routes/CpoUser.Routes.js';
 import ChargerRouter from './Routes/Chargers.Routes.js';
 import StaionRouter from './Routes/Stations.Routes.js';
+import { signin, signup } from './Controller/Users.Controllers.js';
+import { CpoSignin, CpoSignup } from './Controller/CopUsers.Controllers.js';
 const users = {};
 const app =express();
 app.use(express.json());
@@ -56,20 +58,29 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ message: 'Token not provided.' });
   }
 
-  // Verify the token
-  jwt.verify(token, 'yourSecretKey', (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ message: 'Invalid token.' });
-    }
+  try {
+    // Verify the token using the same secret key used for signing
+    const decoded = jwt.verify(token, "my-ultra-secure-and-ultra-long-secret");
 
-    // Attach the decoded payload to the request object for further use
+    // Attach the decoded user data to the request object
     req.user = decoded;
+
+    // Proceed to the next middleware or route handler
     next();
-  });
+  } catch (err) {
+    // If token verification fails, return an error response
+    return res.status(401).json({
+      status: 'fail',
+      message: 'Unauthorized - Invalid token',
+    });
+  }
 };
 
 
-
+app.post('/api/signin', signin);
+app.post('/api/signup', signup);
+app.post('/api/cpo/signin', CpoSignin);
+app.post('/api/cpo/signup', CpoSignup);
 app.use("/api/",verifyToken,userRouter)
 app.use("/api/cpo/",verifyToken,cpoUserRouter)
 app.use("/api/chargers/",verifyToken,ChargerRouter)

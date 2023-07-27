@@ -5,8 +5,8 @@ import { createRole, deleteRole, getAllRoles, getRoleById, updateRole } from '..
 export const userRouter = express.Router();
 userRouter.get('/users', getAllUsers);
 userRouter.get('/users/:id', getUserById);
-userRouter.post('/signup', signup);
-userRouter.post('/signin', signin);
+
+
 userRouter.get('/logout', logout);
 userRouter.post('/forgotPassword', forgotPassword);
 userRouter.patch('/resetPassword/:token', resetPassword);

@@ -6,8 +6,8 @@ import { CpodeleteUser, CpoeditUser, CpoforgotPassword, CpogetAllUsers, CpogetUs
 export const cpoUserRouter = express.Router();
 cpoUserRouter.get('/users', CpogetAllUsers);
 cpoUserRouter.get('/users/:id', CpogetUserById);
-cpoUserRouter.post('/signup', CpoSignup);
-cpoUserRouter.post('/signin', CpoSignin);
+
+
 cpoUserRouter.get('/logout', Cpologout);
 cpoUserRouter.post('/forgotPassword', CpoforgotPassword);
 cpoUserRouter.patch('/resetPassword/:token', CporesetPassword);
