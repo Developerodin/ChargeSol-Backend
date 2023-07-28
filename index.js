@@ -24,6 +24,8 @@ import ChargerRouter from './Routes/Chargers.Routes.js';
 import StaionRouter from './Routes/Stations.Routes.js';
 import { signin, signup } from './Controller/Users.Controllers.js';
 import { CpoSignin, CpoSignup } from './Controller/CopUsers.Controllers.js';
+import { CustomersRouter } from './Routes/Customer.Routes.js';
+import { CustomerSignin, CustomerSignup } from './Controller/Customers.Controller.js';
 const users = {};
 const app =express();
 app.use(express.json());
@@ -81,10 +83,13 @@ app.post('/api/signin', signin);
 app.post('/api/signup', signup);
 app.post('/api/cpo/signin', CpoSignin);
 app.post('/api/cpo/signup', CpoSignup);
+app.post('/api/customers/signin', CustomerSignin);
+app.post('/api/customers/signup', CustomerSignup);
 app.use("/api/",verifyToken,userRouter)
 app.use("/api/cpo/",verifyToken,cpoUserRouter)
 app.use("/api/chargers/",verifyToken,ChargerRouter)
 app.use("/api/stations/",verifyToken,StaionRouter)
+app.use("/api/customers/",verifyToken,CustomersRouter)
 
 const PORT=8000;
 server.listen(PORT,()=>{

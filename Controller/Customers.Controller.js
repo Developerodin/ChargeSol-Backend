@@ -10,6 +10,9 @@ import sendEmail from '../utils/email.js';
 import path from 'path';
 import { userJoin } from '../utils/users.js';
 import { User } from '../Models/Users.Model.js';
+
+import { CustomerModel } from '../Models/Customer.Model.js';
+import { createWallet } from './CustomerWallet.Controller.js';
 // import { User } from './path/to/User.Model.js';
 
 const JWT_SECRET="my-ultra-secure-and-ultra-long-secret"
@@ -50,43 +53,51 @@ export const createSendToken = (user, statusCode, res, msg) => {
 /**
  * Sign Up
  */
-export const signup = catchAsync(async (req, res, next) => {
-    // if (req.body['g-recaptcha-response'] === undefined || req.body['g-recaptcha-response'] === '' || req.body['g-recaptcha-response'] === null) {
-    //     return res.status(200).json({
-    //         status: 'fail',
-    //         message: 'Please select captcha'
-    //     });
-    // }
-    // // Put your secret key here.
-    // var secretKey = process.env.CAPTCHA_SECRET;
-    // // req.connection.remoteAddress will provide IP address of connected user.
-    // var verificationUrl = "https://www.google.com/recaptcha/api/siteverify?secret=" + secretKey + "&response=" + req.body['g-recaptcha-response'] + "&remoteip=" + req.connection.remoteAddress;
-    // // Hitting GET request to the URL, Google will respond with success or error scenario.
-    // request(verificationUrl, async (error, response, body) => {
-    //     body = JSON.parse(body);
-    // });
-    const { email, password } = req.body;
+export const CustomerSignup = catchAsync(async (req, res, next) => {
+  try {
+      const { email, password,phoneNumber } = req.body;
 
       // Check if the email or phone number already exists in the database
-      const existingCustomer = await CustomerModel.findOne({email});
+      // const existingCustomer = await CustomerModel.findOne({
+      //     $or: [{ email }, { phoneNumber }],
+      // });
 
-      if (existingCustomer) {
-          return res.status(400).json({
-              status: "fail",
-              message: "User already exists with this email.",
-          });
-      }
-    await User.create(req.body);
-    return res.status(200).json({
-        status: "success",
-        message: "Register Sucessfully"
-    })
+      // if (existingCustomer) {
+      //     return res.status(400).json({
+      //         status: "fail",
+      //         message: "User already exists with this email or phone number.",
+      //     });
+      // }
+
+      // If the email or phone number is not found, proceed with creating the customer
+      const newCustomer = await CustomerModel.create(req.body);
+
+      // Create a wallet for the new customer
+      const wallet = await createWallet(newCustomer._id);
+      console.log(wallet);
+
+      return res.status(200).json({
+          status: "success",
+          message: "Registered Successfully",
+          data: {
+              customer: newCustomer,
+          },
+      });
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+          status: "error",
+          message: "Internal Server Error",
+      });
+  }
 });
+
+
 
 /**
  * Sign In
  */
-export const signin = catchAsync(async (req, res, next) => {
+export const CustomerSignin = catchAsync(async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) {
         return res.status(200).json({
@@ -95,7 +106,7 @@ export const signin = catchAsync(async (req, res, next) => {
         });
     }
 
-    const user = await User.findOne({ email }).select('+password');
+    const user = await CustomerModel.findOne({ email }).select('+password');
     if (!user || !await user.correctPassword(password, user.password)) {
         return res.status(200).json({
             status: 'fail',
@@ -143,9 +154,9 @@ export const signin = catchAsync(async (req, res, next) => {
 /**
  * Forgot Password
  */
-export const forgotPassword = catchAsync(async (req, res, next) => {
+export const CustomerforgotPassword = catchAsync(async (req, res, next) => {
     // 1) Get User based on Posted Email
-    const user = await User.findOne({ email: req.body.email });
+    const user = await CustomerModel.findOne({ email: req.body.email });
     if (!user) {
         return res.status(200).json({
             status: 'fail',
@@ -154,7 +165,7 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
     }
 
     // 2) Generate the random reset token
-    const resetToken = user.createPasswordResetToken();
+    const resetToken = CustomerModel.createPasswordResetToken();
     await user.save({ validateBeforeSave: false });
 
     // 3) Send it to user's email
@@ -187,11 +198,11 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
 /**
  * Reset Password
  */
-export const resetPassword = catchAsync(async (req, res, next) => {
+export const CustomerresetPassword = catchAsync(async (req, res, next) => {
     // 1) Get User based on the token
     console.log("Token",req.params.token);
     const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
-    const user = await User.findOne({ passwordResetToken: hashedToken, passwordResetExpires: { $gt: Date.now() } });
+    const user = await CustomerModel.findOne({ passwordResetToken: hashedToken, passwordResetExpires: { $gt: Date.now() } });
      
       console.log("pass",req.body.password);
     // 2) If token has not expired, and there is user, set the new password
@@ -216,48 +227,60 @@ export const resetPassword = catchAsync(async (req, res, next) => {
 /**
  * Logout
  */
-export const logout = async (req, res) => {
+export const Customerlogout = async (req, res) => {
     res.clearCookie('user_id');
     res.clearCookie('jwt');
     res.status(200).json({ status: 'success' });
 }
 
-export const getAllUsers = async (req, res) => {
+export const CustomergetAllUsers = async (req, res) => {
     try {
-      const users = await User.find();
+      const users = await CustomerModel.find();
       res.json(users);
     } catch (error) {
       res.status(500).json({ error: 'Failed to retrieve users' });
     }
   };
 
-export const editUser = async (req, res) => {
+export const CustomereditUser = async (req, res) => {
     const userId = req.params.id;
     const updatedData = req.body;
   
     try {
-      const user = await User.findOne({_id:userId});
+      const user = await CustomerModel.findOne({_id:userId});
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
       user.name = updatedData.name;
       user.email = updatedData.email;
       user.password = updatedData.password;
-      user.role = updatedData.role;
-      user.status=updatedData.status;
-    
+      user.Brand_Name = updatedData.Brand_Name;
+      user.GST_No = updatedData.GST_No;
+      user.MID = updatedData.MID;
+      user.Registered_Address = updatedData.Registered_Address;
+      user.state = updatedData.state;
+      user.regional = updatedData.regional;
+      user.National = updatedData.National;
+      user.Initial_Balance = updatedData.Initial_Balance;
+      user.Number = updatedData.Number;
+      user.ABB_TestCharger = updatedData.ABB_TestCharger;
+      user.Select_Price = updatedData.Select_Price;
+      user.Fixed_Rent=updatedData.Fixed_Rent;
+      user.Company_Share=updatedData.Company_Share;
+      user.image=updatedData.image;
+     console.log("Updated==>",user)
     await user.save();
       res.json(user);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to update user' });
+      res.status(500).json({ error });
     }
   };
 
-  export const getUserById = async (req, res) => {
+  export const CustomergetUserById = async (req, res) => {
     const { id } = req.params;
   
     try {
-      const user = await User.findById(id);
+      const user = await CustomerModel.findById(id);
   
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -269,9 +292,9 @@ export const editUser = async (req, res) => {
     }
   };
 
-  export const deleteUser =async (req, res) => {
+  export const CustomerdeleteUser =async (req, res) => {
     try {
-      const user = await User.findByIdAndDelete(req.params.id);
+      const user = await CustomerModel.findByIdAndDelete(req.params.id);
   
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -283,6 +306,53 @@ export const editUser = async (req, res) => {
       return res.status(500).json({ message: 'Internal server error' });
     }
   };
+
+  export const getCustomersByCpoId = async (req, res, next) => {
+    const { cpoId } = req.params;
+    console.log(cpoId);
+    // Perform a query to find all chargers with the given CPO ID
+    const Customer = await CustomerModel.find({ cpoId })
+      // .populate('cpoId') // Use populate to fetch the related CpoUser details
+      // .exec();
+  
+    if (!Customer || Customer.length === 0) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Customer not found for the given CPO ID',
+      });
+    }
+  
+    res.status(200).json({
+      status: 'success',
+      data: {
+        Customer,
+      },
+    });
+};
+
+export const updateFunctionalStatus = async (req, res) => {
+  const { customerId, functionalStatus } = req.body; // Assuming the frontend sends the chargerId and functionalStatus in the request body
+
+  try {
+    // Find the charger by ID
+    const Customer = await CustomerModel.findById(customerId);
+
+    if (!Customer) {
+      return res.status(404).json({ error: 'Charger not found' });
+    }
+
+    // Update the functional status based on the value from the frontend
+    Customer.status = functionalStatus;
+
+    // Save the updated charger object
+    await Customer.save();
+
+    return res.status(200).json({ message: 'Functional status updated successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+};
 /**
  * Login Page
  */

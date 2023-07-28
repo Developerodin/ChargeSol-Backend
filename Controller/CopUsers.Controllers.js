@@ -52,6 +52,17 @@ export const createSendToken = (user, statusCode, res, msg) => {
  * Sign Up
  */
 export const CpoSignup = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+
+      // Check if the email or phone number already exists in the database
+      const existingCustomer = await CustomerModel.findOne({email});
+
+      if (existingCustomer) {
+          return res.status(400).json({
+              status: "fail",
+              message: "User already exists with this email or phone number.",
+          });
+      }
    
     await CpoUser.create(req.body);
     return res.status(200).json({
