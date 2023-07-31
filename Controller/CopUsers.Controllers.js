@@ -11,6 +11,7 @@ import path from 'path';
 import { userJoin } from '../utils/users.js';
 import { User } from '../Models/Users.Model.js';
 import { CpoUser } from '../Models/CopsUsers.Model.js';
+import { CustomerModel } from '../Models/Customer.Model.js';
 // import { User } from './path/to/User.Model.js';
 
 const JWT_SECRET="my-ultra-secure-and-ultra-long-secret"
@@ -53,7 +54,7 @@ export const createSendToken = (user, statusCode, res, msg) => {
  */
 export const CpoSignup = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
-
+          console.log("Cpos sign up", email, password);
       // Check if the email or phone number already exists in the database
       const existingCustomer = await CustomerModel.findOne({email});
 

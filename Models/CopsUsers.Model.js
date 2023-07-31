@@ -26,13 +26,13 @@ const cpoUserSchema = new mongoose.Schema(
     MID: { type: String, required: true },
     Registered_Address: { type: String, required: true },
     state: { type: String, required: true },
-    regional: { type: String,
+    regional: { type: Boolean,
         default: false },
-    National: { type: String,
+    National: { type: Boolean,
         default: false},
     Initial_Balance: { type: Number, default: 0 }, // Assuming the initial balance is a number
-    Number: { type: String, required: true },
-    ABB_TestCharger: { type: String, required: true },
+    Number: { type: Number, required: true },
+    ABB_TestCharger: { type: Boolean, required: true },
     Select_Price: { type: String, required: true },
     Fixed_Rent: { type: Number, default: 0 }, // Assuming the fixed rent is a number
     Company_Share: { type: Number, default: 0 },
