@@ -16,6 +16,10 @@ const transactionSchema = new mongoose.Schema({
     enum: ['debit', 'credit'],
     required: true,
   },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
   // Additional fields for transaction details if needed
   // For example, 'description', 'timestamp', etc.
 });

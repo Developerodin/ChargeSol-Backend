@@ -3,6 +3,7 @@ import { CpodeleteUser, CpoeditUser, CpoforgotPassword, CpogetAllUsers, CpogetUs
 import { CustomerdeleteUser, CustomereditUser, CustomerforgotPassword, CustomergetAllUsers, CustomergetUserById, Customerlogout, CustomerresetPassword, getCustomersByCpoId, updateFunctionalStatus } from '../Controller/Customers.Controller.js';
 import { getWalletByCustomerId } from '../Controller/CustomerWallet.Controller.js';
 import { getTransactionsByCustomerId, processTransaction } from '../Controller/CustomerTransaction.Controller.js';
+import { createComplaint, getAllComplaints, getComplaintsByCpoId, getComplaintsByUserId, updateComplaintStatus } from '../Controller/CustomerComplaint.Controller.js';
 
 
 
@@ -23,3 +24,8 @@ CustomersRouter.post('/processTransaction', processTransaction);
 
 CustomersRouter.get('/gethistory/:id', getTransactionsByCustomerId);
 
+CustomersRouter.get('/complaints', getAllComplaints);
+CustomersRouter.get('/complaints_userId/:id', getComplaintsByUserId);
+CustomersRouter.get('/complaints_cpoId/:id', getComplaintsByCpoId);
+CustomersRouter.post('/create_complaints', createComplaint);
+CustomersRouter.post('/complaints_status/:id', updateComplaintStatus);
