@@ -14,12 +14,20 @@ export const createTransaction = async (customerId, amount, type) => {
 };
 
 // Get all transactions for a customer
-export const getTransactionsByCustomerId = async (customerId) => {
+export const getTransactionsByCustomerId = async (req, res, next) => {
   try {
-    const transactions = await CustomerTransactionModel.find({ customerId });
-    return transactions;
+   
+    const {id} = req.params;
+    const transactions = await CustomerTransactionModel.find({ customerId:id });
+    return res.send({
+      status: 'success',
+      data:transactions
+    })
   } catch (error) {
-    throw new Error('Error fetching transactions');
+    return res.send({
+      status: 'Fail',
+      message:error
+    })
   }
 };
 

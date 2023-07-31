@@ -2,7 +2,7 @@ import express from 'express';
 import { CpodeleteUser, CpoeditUser, CpoforgotPassword, CpogetAllUsers, CpogetUserById, index, Cpologout, CporesetPassword, CpoSignin, CpoSignup } from '../Controller/CopUsers.Controllers.js';
 import { CustomerdeleteUser, CustomereditUser, CustomerforgotPassword, CustomergetAllUsers, CustomergetUserById, Customerlogout, CustomerresetPassword, getCustomersByCpoId, updateFunctionalStatus } from '../Controller/Customers.Controller.js';
 import { getWalletByCustomerId } from '../Controller/CustomerWallet.Controller.js';
-import { processTransaction } from '../Controller/CustomerTransaction.Controller.js';
+import { getTransactionsByCustomerId, processTransaction } from '../Controller/CustomerTransaction.Controller.js';
 
 
 
@@ -21,4 +21,5 @@ CustomersRouter.get('/getWallet/:id', getWalletByCustomerId);
 
 CustomersRouter.post('/processTransaction', processTransaction);
 
+CustomersRouter.get('/gethistory/:id', getTransactionsByCustomerId);
 
