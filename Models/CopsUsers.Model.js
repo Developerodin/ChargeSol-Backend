@@ -32,10 +32,6 @@ const cpoUserSchema = new mongoose.Schema(
         default: false},
     Initial_Balance: { type: Number, default: 0 }, // Assuming the initial balance is a number
     Number: { type: Number, required: true },
-    ABB_TestCharger: { type: Boolean, required: true },
-    Select_Price: { type: String, required: true },
-    Fixed_Rent: { type: Number, default: 0 }, // Assuming the fixed rent is a number
-    Company_Share: { type: Number, default: 0 },
     image: {
       type: String,
       default: "default_image.jpg",
@@ -51,6 +47,8 @@ const cpoUserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    roamingDetails: [Object], // Array of objects for Roaming Details
+    chargerDetails: [Object],
   },
   {
     timestamps: {},

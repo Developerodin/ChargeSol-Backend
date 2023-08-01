@@ -54,7 +54,7 @@ export const createSendToken = (user, statusCode, res, msg) => {
  */
 export const CpoSignup = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
-          console.log("Cpos sign up", email, password);
+          // console.log("Cpos sign up", req.body);
       // Check if the email or phone number already exists in the database
       const existingCustomer = await CustomerModel.findOne({email});
 
@@ -241,10 +241,9 @@ export const CpoeditUser = async (req, res) => {
       user.National = updatedData.National;
       user.Initial_Balance = updatedData.Initial_Balance;
       user.Number = updatedData.Number;
-      user.ABB_TestCharger = updatedData.ABB_TestCharger;
-      user.Select_Price = updatedData.Select_Price;
-      user.Fixed_Rent=updatedData.Fixed_Rent;
-      user.Company_Share=updatedData.Company_Share;
+      user.roamingDetails=updatedData.roamingDetails, // Array of objects for Roaming Details
+      user.chargerDetails=updatedData.chargerDetails,
+     
       user.image=updatedData.image;
      console.log("Updated==>",user)
     await user.save();
