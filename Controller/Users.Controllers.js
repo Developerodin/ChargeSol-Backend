@@ -8,8 +8,11 @@ import  catchAsync  from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 import sendEmail from '../utils/email.js';
 import path from 'path';
-import { userJoin } from '../utils/users.js';
+import { UserEmailMatch, contactEmail, contactList, lastMsg, userJoin } from '../utils/users.js';
 import { User } from '../Models/Users.Model.js';
+import { Message as Msg} from '../Models/Messages.Model.js';
+import { Contact } from '../Models/Contact.Model.js';
+import { CustomerModel } from '../Models/Customer.Model.js';
 // import { User } from './path/to/User.Model.js';
 
 const JWT_SECRET="my-ultra-secure-and-ultra-long-secret"
@@ -76,10 +79,11 @@ export const signup = catchAsync(async (req, res, next) => {
               message: "User already exists with this email.",
           });
       }
-    await User.create(req.body);
+   const data= await User.create(req.body);
     return res.status(200).json({
         status: "success",
-        message: "Register Sucessfully"
+        message: "Register Sucessfully",
+        data:data
     })
 });
 
@@ -230,6 +234,110 @@ export const getAllUsers = async (req, res) => {
       res.status(500).json({ error: 'Failed to retrieve users' });
     }
   };
+
+export const PrivatChatAllUsers=async(req,res)=>{
+  try{
+    const {userEmail, created_by, username} =req.body;
+    const users = await User.find();
+
+    // console.log("Users",users);
+
+    users.map((el)=>(
+    
+      UserEmailMatch(el.email, created_by).then((emailData) => {
+        console.log("EmailData: ", emailData)
+        if (emailData != null) {
+          if (emailData.email != userEmail) {
+            contactEmail(el.email, created_by).then((contactData) => {
+              console.log("ContactData 1: ", contactData)
+              if (contactData == null) {
+                var user_id = emailData._id;
+                let contact_list = [{ 'name': el.name, 'email': el.email, 'user_id': user_id, 'created_by': created_by }, { 'name': username, 'email': userEmail, 'user_id': created_by, 'created_by': user_id }];
+                // io.to(socket.id).emit("Success", { 'msg': 'Contact added successfully' });
+                contact_list.forEach(async element => {
+                  const contact = new Contact(element);
+                  contact.save({ validateBeforeSave: false }).then(() => {
+                    contactList(contact.created_by).then((contacts) => {
+                      contacts.forEach(contact => {
+                        for (const key in users) {
+                          if (contact.created_by == users[key]) {
+                            console.log("Contacts",users[key],contacts);
+                            // io.to(key).emit('contactsLists', { contacts: contacts });
+                          }
+                        }
+                      });
+                    });
+  
+                    userJoin(contact.created_by).then((res) => {
+                      for (const key in users) {
+                        if (contact.created_by == users[key]) {
+                          // io.to(key).emit('roomUsers', { users: res });
+                        }
+                      }
+                    });
+                    setTimeout(() => {
+                      contactList(contact.created_by).then((contacts) => {
+                        contacts.forEach(contact => {
+                          for (const key in users) {
+                            if (contact.created_by == users[key]) {
+                              console.log("Contacts",users[key],contacts);
+                              // io.to(key).emit('contactsLists', { contacts: contacts });
+                            }
+                          }
+                          lastMsg(contact.created_by, element.user_id).then((res) => {
+                            for (const key in users) {
+                              if (contact.created_by == users[key]) {
+                                // io.to(key).emit('isMessage', { messages: res });
+                              }
+                            }
+                          });
+                        });
+                      });
+                    }, 100);
+  
+                  });
+  
+                  if (contact.created_by == created_by) {
+                    var receiver_id = contact.user_id;
+                    var sender_id = contact.created_by;
+                  }
+                  else {
+                    var receiver_id = contact.user_id;
+                    var sender_id = contact.created_by;
+                  }
+  
+                  const message = 'Hii';
+                  const file_upload = '';
+                  const msg = new Msg({ message, sender_id, receiver_id, file_upload });
+                  msg.save({ ValidityState: false }).then(() => { });
+                });
+              }
+              else {
+                // io.to(socket.id).emit("contactsError", { 'msg': 'email allredy exists' });
+              }
+            });
+          }
+          else {
+            // io.to(socket.id).emit("contactsError", { 'msg': 'Please use valid email' });
+          }
+        }
+        else {
+          // io.to(socket.id).emit("contactsError", { 'msg': 'Email not matched' });
+        }
+      })
+    
+    ))
+    
+
+      res.send({
+        sttaus:"success",
+        message:"User Can Chat to Other Users"
+      });
+  }
+  catch(err){
+    res.status(500).json({ error: err });
+  }
+}
 
 export const editUser = async (req, res) => {
     const userId = req.params.id;

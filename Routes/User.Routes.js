@@ -1,5 +1,5 @@
 import express from 'express';
-import { deleteUser, editUser, forgotPassword, getAllUsers, getUserById, index, logout, resetPassword, signin, signup } from '../Controller/Users.Controllers.js';
+import { PrivatChatAllUsers, deleteUser, editUser, forgotPassword, getAllUsers, getUserById, index, logout, resetPassword, signin, signup } from '../Controller/Users.Controllers.js';
 import { createRole, deleteRole, getAllRoles, getRoleById, updateRole } from '../Controller/UserPermission.Controllers.js';
 
 export const userRouter = express.Router();
@@ -12,7 +12,7 @@ userRouter.post('/forgotPassword', forgotPassword);
 userRouter.patch('/resetPassword/:token', resetPassword);
 userRouter.put('/users/:id', editUser);
 userRouter.delete('/users/:id', deleteUser);
-
+userRouter.post('/users/addprivateChat',PrivatChatAllUsers);
 userRouter.post('/roles', async (req, res) => {
     const { name, permissions } = req.body;
     try {
