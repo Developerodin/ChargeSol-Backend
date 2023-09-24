@@ -236,7 +236,12 @@ export const Customerlogout = async (req, res) => {
 export const CustomergetAllUsers = async (req, res) => {
     try {
       const users = await CustomerModel.find();
-      res.json(users);
+      res.status(200).json({
+        status: 'success',
+        data: {
+          users,
+        },
+      });
     } catch (error) {
       res.status(500).json({ error: 'Failed to retrieve users' });
     }
