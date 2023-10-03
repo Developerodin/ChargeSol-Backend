@@ -90,7 +90,7 @@ app.use("/api/cpo/",verifyToken,cpoUserRouter)
 app.use("/api/chargers/",verifyToken,ChargerRouter)
 app.use("/api/stations/",verifyToken,StaionRouter)
 app.use("/api/customers/",verifyToken,CustomersRouter)
-
+app.use("/api/customers4/",verifyToken,CustomersRouter)
 const PORT=8000;
 server.listen(PORT,()=>{
     try{
