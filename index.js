@@ -26,8 +26,18 @@ import { signin, signup } from './Controller/Users.Controllers.js';
 import { CpoSignin, CpoSignup } from './Controller/CopUsers.Controllers.js';
 import { CustomersRouter } from './Routes/Customer.Routes.js';
 import { CustomerSignin, CustomerSignup } from './Controller/Customers.Controller.js';
+import multer from 'multer';
 const users = {};
 const app =express();
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'media/'); // Set the destination folder for image storage
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname); // Use the original filename for the stored image
+  },
+});
+const upload = multer({ storage: storage });
 app.use(express.json());
 app.use(cors());
 
@@ -50,6 +60,12 @@ app.get('/api/token', (req, res) => {
   
  
   res.json({ token });
+});
+
+app.post('/api/upload', upload.single('image'), (req, res) => {
+  // The image has been uploaded and stored in the media folder.
+  // You can send a response to the frontend, e.g., a success message.
+  res.json({ message: 'Image uploaded successfully' });
 });
 
 const verifyToken = (req, res, next) => {
