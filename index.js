@@ -27,6 +27,7 @@ import { CpoSignin, CpoSignup } from './Controller/CopUsers.Controllers.js';
 import { CustomersRouter } from './Routes/Customer.Routes.js';
 import { CustomerSignin, CustomerSignup } from './Controller/Customers.Controller.js';
 import multer from 'multer';
+import { updateFunctionalStatus } from './Controller/Charger.Controller.js';
 const users = {};
 const app =express();
 const storage = multer.diskStorage({
@@ -107,6 +108,9 @@ app.use("/api/chargers/",verifyToken,ChargerRouter)
 app.use("/api/stations/",verifyToken,StaionRouter)
 app.use("/api/customers/",verifyToken,CustomersRouter)
 app.use("/api/customers4/",verifyToken,CustomersRouter)
+
+app.post('/test-api/chargerStatus', updateFunctionalStatus)
+
 const PORT=8000;
 server.listen(PORT,()=>{
     try{

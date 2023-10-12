@@ -41,6 +41,9 @@ const ChargersSchema = new mongoose.Schema({
     ref: 'CpoUsers',
     required: true,
   },
+  status :{
+    type:Object
+  }
 });
 
 // Create the model
