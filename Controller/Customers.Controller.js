@@ -26,7 +26,7 @@ export const signToken = id => {
     });
 }
 
-export const createSendToken = (user, statusCode, res, msg) => {
+export const createSendToken = (user, statusCode, res, msg,plugeasytoken) => {
   
     const token = signToken(user._id);
     const cookieOptions = {
@@ -45,10 +45,36 @@ export const createSendToken = (user, statusCode, res, msg) => {
         status: 'success',
         message: msg,
         token,
+        plugeasytoken,
         data: {user}
     });
 }
 
+const getPlugeasyToken = async () => {
+  const apiUrl = 'https://api.plugeasy.in/api/auth-api';
+  const companytoken = 'df4af26c2c08f766f3a9a24883a65d87';
+
+  try {
+      const response = await axios.get(apiUrl, {
+          headers: {
+              'companytoken': companytoken
+          }
+      });
+
+      if (response.status === 200) {
+          // Assuming the plugeasytoken is in the response data
+          const plugeasytoken = response.data.cipheredMessage;
+          console.log(plugeasytoken);
+          return plugeasytoken;
+      } else {
+          console.error('Failed to get plugeasytoken');
+          return null;
+      }
+  } catch (error) {
+      console.error('Error while making the request:', error.message);
+      return null;
+  }
+}
 
 /**
  * Sign Up
@@ -142,7 +168,8 @@ export const CustomerSignin = catchAsync(async (req, res, next) => {
         //     message: 'Failed captcha verification'
         //   });
         // } else {
-        createSendToken(user, 200, res, 'Login Successfully');
+          const plugeasytoken = await getPlugeasyToken();
+        createSendToken(user, 200, res, 'Login Successfully',plugeasytoken);
         // }
       } catch (error) {
         console.error(error);
