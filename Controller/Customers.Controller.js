@@ -54,6 +54,7 @@ export const createSendToken = (user, statusCode, res, msg) => {
  * Sign Up
  */
 export const CustomerSignup = catchAsync(async (req, res, next) => {
+  console.log("Sigin up ")
   try {
       const { email, password,phoneNumber } = req.body;
 
@@ -87,7 +88,7 @@ export const CustomerSignup = catchAsync(async (req, res, next) => {
       console.log(error);
       return res.status(500).json({
           status: "error",
-          message: "error",
+          message: {error},
       });
   }
 });
@@ -98,6 +99,7 @@ export const CustomerSignup = catchAsync(async (req, res, next) => {
  * Sign In
  */
 export const CustomerSignin = catchAsync(async (req, res, next) => {
+  console.log("Sigin in ")
     const { phone_number, password } = req.body;
     if (!phone_number || !password) {
         return res.status(200).json({
@@ -144,7 +146,10 @@ export const CustomerSignin = catchAsync(async (req, res, next) => {
         // }
       } catch (error) {
         console.error(error);
-        // Handle the error condition accordingly
+        return res.status(500).json({
+          status: "error",
+          message: {error},
+      });
       }
       
 });
