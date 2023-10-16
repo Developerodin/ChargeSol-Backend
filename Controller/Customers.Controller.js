@@ -98,19 +98,19 @@ export const CustomerSignup = catchAsync(async (req, res, next) => {
  * Sign In
  */
 export const CustomerSignin = catchAsync(async (req, res, next) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { phone_number, password } = req.body;
+    if (!phone_number || !password) {
         return res.status(200).json({
             status: 'fail',
-            message: 'please enter email or password'
+            message: 'please enter phone_number or password'
         });
     }
 
-    const user = await CustomerModel.findOne({ email }).select('+password');
+    const user = await CustomerModel.findOne({ phone_number }).select('+password');
     if (!user || !await user.correctPassword(password, user.password)) {
         return res.status(200).json({
             status: 'fail',
-            message: 'invalid email or password'
+            message: 'invalid phone_number or password'
         });
     }
 
