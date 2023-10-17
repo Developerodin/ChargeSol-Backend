@@ -72,7 +72,7 @@ export const addCharger = catchAsync(async (req, res, next) => {
 });
 
 export const updateFunctionalStatus = async (req, res) => {
-  const { chargerId, functionalStatus , details } = req.body; // Assuming the frontend sends the chargerId and functionalStatus in the request body
+  const { chargerId, functionalStatus  } = req.body; // Assuming the frontend sends the chargerId and functionalStatus in the request body
 
   try {
     // Find the charger by ID
@@ -84,7 +84,7 @@ export const updateFunctionalStatus = async (req, res) => {
 
     // Update the functional status based on the value from the frontend
     charger.functional = functionalStatus;
-    charger.status = details;
+    
     // Save the updated charger object
     await charger.save();
 
