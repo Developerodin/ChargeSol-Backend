@@ -92,15 +92,15 @@ export const CustomerSignup = catchAsync(async (req, res, next) => {
     //           message: "User already exists with this email or phone number.",
     //       });
     //   }
-    const data={
-      name: 'Test 23',
-      email: 'lks@gmail.com',
-      phone_number: '8686868686',
-      password: '1234',
-      cpoId: '64afa5e0720c21517f1b1844'
-    }
+    // const data={
+    //   name: 'Test 23',
+    //   email: '',
+    //   phone_number: '8686868686',
+    //   password: '1234',
+    //   cpoId: '64afa5e0720c21517f1b1844'
+    // }
 
-      const newCustomer = await CustomerModel.create(data);
+      const newCustomer = await CustomerModel.create(req.body);
 
       const wallet = await createWallet(newCustomer._id);
       console.log(wallet);

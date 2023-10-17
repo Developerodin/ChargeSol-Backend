@@ -77,7 +77,7 @@ export const updateFunctionalStatus = async (req, res) => {
   try {
     // Find the charger by ID
     const charger = await ChargersModel.findById(chargerId);
-
+    
     if (!charger) {
       return res.status(404).json({ error: 'Charger not found' });
     }
