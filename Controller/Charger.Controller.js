@@ -94,6 +94,34 @@ export const updateFunctionalStatus = async (req, res) => {
     return res.status(500).json({ error: 'Something went wrong' });
   }
 };
+export const updateChargerStatus = async (req, res) => {
+  const chargerIdmain = "6527e3ef503da286dc698676"
+  const { type , chargerId,data } = req.body; // Assuming the frontend sends the chargerId and functionalStatus in the request body
+
+  try {
+    // Find the charger by ID
+    const charger = await ChargersModel.findById(chargerIdmain);
+
+    if (!charger) {
+      return res.status(404).json({ error: 'Charger not found' });
+    }
+
+    // Update the functional status based on the value from the frontend
+    charger.functional = data.status === "Available" ? true : false;
+    charger.status = {
+      type,
+      chargerId,
+      data
+    };
+    // Save the updated charger object
+    await charger.save();
+
+    return res.status(200).json({ message: 'status updated successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+};
 
 // Controller for deleting a charger by ID
 export const deleteCharger = catchAsync(async (req, res, next) => {

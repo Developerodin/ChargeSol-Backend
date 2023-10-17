@@ -9,6 +9,10 @@ const CustomerSchema = new mongoose.Schema({
         required: [true, 'A user must have a name'],
         maxlength: [20, 'Username must be less than or equal to 10 characters.']
     },
+    email: {
+        type: String,
+        validate: [validator.isEmail, 'Please provide a valid email']
+    },
     password: {
         type: String,
         

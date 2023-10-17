@@ -1,5 +1,5 @@
 import express from 'express';
-import { addCharger, deleteCharger, getAllChargers, getChargerById, getChargersByCPOId, updateCharger, updateFunctionalStatus } from '../Controller/Charger.Controller.js';
+import { addCharger, deleteCharger, getAllChargers, getChargerById, getChargersByCPOId, updateCharger, updateChargerStatus, updateFunctionalStatus } from '../Controller/Charger.Controller.js';
  // Adjust the path accordingly
 
 const ChargerRouter = express.Router();
@@ -11,6 +11,7 @@ ChargerRouter.get('/:chargerId', getChargerById);
 ChargerRouter.get('/cpo/:cpoId', getChargersByCPOId);
 ChargerRouter.post('/addchargers', addCharger);
 ChargerRouter.post('/update-functional', updateFunctionalStatus)
+ChargerRouter.post('/update-status', updateChargerStatus)
 // Route for deleting a charger by ID
 ChargerRouter.delete('/deletechargers/:chargerId', deleteCharger);
 

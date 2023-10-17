@@ -80,26 +80,28 @@ const getPlugeasyToken = async () => {
  * Sign Up
  */
 export const CustomerSignup = catchAsync(async (req, res, next) => {
-  console.log("Sigin up ")
+  
   try {
-      const { email, password,phoneNumber } = req.body;
+      const { email, password,phone_number } = req.body;
+      console.log("body ==>", req.body)
+    //   const existingCustomer = await CustomerModel.findOne({phone_number});
+    //  console.log("Exeisting cutomer",existingCustomer)
+    //   if (existingCustomer) {
+    //       return res.status(400).json({
+    //           status: "fail",
+    //           message: "User already exists with this email or phone number.",
+    //       });
+    //   }
+    const data={
+      name: 'Test 23',
+      email: 'lks@gmail.com',
+      phone_number: '8686868686',
+      password: '1234',
+      cpoId: '64afa5e0720c21517f1b1844'
+    }
 
-      // Check if the email or phone number already exists in the database
-      // const existingCustomer = await CustomerModel.findOne({
-      //     $or: [{ email }, { phoneNumber }],
-      // });
+      const newCustomer = await CustomerModel.create(data);
 
-      // if (existingCustomer) {
-      //     return res.status(400).json({
-      //         status: "fail",
-      //         message: "User already exists with this email or phone number.",
-      //     });
-      // }
-
-      // If the email or phone number is not found, proceed with creating the customer
-      const newCustomer = await CustomerModel.create(req.body);
-
-      // Create a wallet for the new customer
       const wallet = await createWallet(newCustomer._id);
       console.log(wallet);
 
@@ -169,6 +171,7 @@ export const CustomerSignin = catchAsync(async (req, res, next) => {
         //   });
         // } else {
           const plugeasytoken = await getPlugeasyToken();
+          console.log("plugeasytoken",plugeasytoken)
         createSendToken(user, 200, res, 'Login Successfully',plugeasytoken);
         // }
       } catch (error) {
