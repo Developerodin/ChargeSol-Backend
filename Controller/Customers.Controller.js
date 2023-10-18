@@ -38,7 +38,7 @@ export const createSendToken = (user, statusCode, res, msg,plugeasytoken) => {
     if (NODE_ENV === 'production') cookieOptions.secure = true;
     res.cookie('jwt', token, cookieOptions);
     res.cookie('user_id', user.id, cookieOptions);
-
+    const currentTime = new Date();
     // Remove password from output
     user.password = undefined;
     return res.status(statusCode).json({
@@ -46,7 +46,8 @@ export const createSendToken = (user, statusCode, res, msg,plugeasytoken) => {
         message: msg,
         token,
         plugeasytoken,
-        data: {user}
+        data: {user},
+        Time: currentTime
     });
 }
 
