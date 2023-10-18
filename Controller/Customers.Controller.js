@@ -51,7 +51,7 @@ export const createSendToken = (user, statusCode, res, msg,plugeasytoken) => {
     });
 }
 
-const getPlugeasyToken = async () => {
+ const getPlugeasyToken = async () => {
   const apiUrl = 'https://api.plugeasy.in/api/auth-api';
   const companytoken = 'df4af26c2c08f766f3a9a24883a65d87';
 
@@ -76,6 +76,28 @@ const getPlugeasyToken = async () => {
       return null;
   }
 }
+
+
+export const getPeasyToken = async (req,res) => {
+  try {
+    
+    const plugeasytoken = await getPlugeasyToken()
+    
+
+    return res.status(200).json({
+        status: "success",
+        message: "Token get Successfully",
+        plugeasytoken
+    });
+} catch (error) {
+    console.log(error);
+    return res.status(500).json({
+        status: "error",
+        message: {error},
+    });
+}
+}
+
 
 /**
  * Sign Up

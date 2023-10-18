@@ -25,7 +25,7 @@ import StaionRouter from './Routes/Stations.Routes.js';
 import { signin, signup } from './Controller/Users.Controllers.js';
 import { CpoSignin, CpoSignup } from './Controller/CopUsers.Controllers.js';
 import { CustomersRouter } from './Routes/Customer.Routes.js';
-import { CustomerSignin, CustomerSignup } from './Controller/Customers.Controller.js';
+import { CustomerSignin, CustomerSignup, getPeasyToken } from './Controller/Customers.Controller.js';
 import multer from 'multer';
 import { updateFunctionalStatus } from './Controller/Charger.Controller.js';
 const users = {};
@@ -101,7 +101,7 @@ if(token === DEFAULT_TOKEN){
   }
 };
 
-
+app.get(`/api/getplugeasytoken`,getPeasyToken)
 app.post('/api/signin', signin);
 app.post('/api/signup', signup);
 app.post('/api/cpo/signin', CpoSignin);
